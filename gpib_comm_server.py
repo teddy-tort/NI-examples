@@ -17,7 +17,7 @@ print_lock = threading.Lock()
 
 # This is an example of a class which is not meant to be used to create objects. Instead, you reference the class
 # directly and use the @classmethod
-class Parser:
+class Interpreter:
     """place device information here and rename to suit your needs"""
     lakeshore = Device(addr=8, gpib_num=0)
     device2 = Device(addr=13, gpib_num=0)
@@ -26,30 +26,36 @@ class Parser:
     def parse(cls, message_to_parse):
         """Parse a message of the format INSTRUMENT::READ,RIGHT,orQUERY::MESSAGEtoINSTRUMENT"""
         msg_list = message_to_parse.upper().split('::')
+        dev_id = msg_list[0]
+        command = msg_list[1]
+        try:
+            message = msg_list[2]
+        except IndexError:
+            message = ''
 
         """MUST EDIT THE FOLLOWING LINES TO SUIT YOUR NEEDS"""
-        if msg_list[0] == "LS":
+        if dev_id == "LS":
             instrument = cls.lakeshore
-            print("Sending message to instrument1")
-        elif msg_list[0] == "MAKE THIS INSTRUMENT ID 2":
+            print("Sending message to Lakeshore temperature controller")
+        elif dev_id == "MAKE THIS INSTRUMENT ID 2":
             instrument = cls.instrument2
             print("Sending message to instrument2")
         else:
             instrument = None
 
         if instrument:
-            if msg_list[1][0] == "W":
-                print(f'Writing "{msg_list[2]}" to {msg_list[0]}')
-                instrument.write(msg_list[2])
+            if command[0] == "W":
+                print(f'Writing "{message}" to {dev_id}')
+                instrument.write(message)
                 msgout = 'empty'
-            elif msg_list[1][0] == "Q":
-                print(f'Querying {msg_list[0]} with "{msg_list[2]}"')
-                msgout = instrument.query(msg_list[2])
-            elif msg_list[1][0] == "R":
-                print(f'Reading from {msg_list[0]}')
+            elif command[0] == "Q":
+                print(f'Querying {dev_id} with "{message}"')
+                msgout = instrument.query(message)
+            elif command[0] == "R":
+                print(f'Reading from {dev_id}')
                 msgout = instrument.read()
         else:
-            msgout = 'Failed to connect'
+            msgout = 'Did not give a valid device id'
         return msgout
 
 
@@ -76,13 +82,13 @@ def server_main(host="localhost", port=62535):
             # message received from client
             msg_client = c.recv(1024)
             msg_client = msg_client.decode('ascii')
-            if msg_client == "shutdown":
+            if msg_client.lower() == "shutdown":
                 print_lock.release()
                 c.close()
                 break
             else:
                 # parse message
-                msg_out = Parser.parse(msg_client)
+                msg_out = Interpreter.parse(msg_client)
                 print(repr(msg_out))
                 c.send(msg_out.encode('ascii'))
     s.close()

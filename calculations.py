@@ -12,7 +12,7 @@ from scipy import special
 
 
 # global constants
-eps0 = 8.85e-6  # electric constant in nF/um
+eps0 = 8.85e-6  # electric constant in pF/um
 
 
 def capacitance(g: float, u: float, N: float, L: float, hS: float, epsS: float) -> float:

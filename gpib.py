@@ -9,7 +9,7 @@ import pyvisa
 import numpy as np
 
 
-class Device(object):
+class Device:
     def __init__(self, addr: int, gpib_num: int = 0):
         """establish connection with instrument over GPIB
         addr - (int) the GPIB address of the instrument you wish to communicate with
