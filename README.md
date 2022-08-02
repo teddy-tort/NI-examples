@@ -184,4 +184,10 @@ Below this class you will make classes specific for each device. An example for 
 super(self.__class__, self).__init__(abbreviation="LS", port=port)
 ```
 
-Following are methods specific for interacting with a Lakeshore. 
+Following are methods specific for interacting with a Lakeshore temperature controller. You can use this as inspiration for building your own classes.
+
+#### client_example.py
+This is an example script interacting and controlling the temperature controller through the server, such that you can take data in a script simultaneously. It is good to define any functions and classes above an ```if __name__ == "__main__":``` line, and then start the actual scripting down there.
+
+#### data_taker.py
+This is an example of a data taking script. I like to make a class that encomposses creating and managing the data file as well as containing the commands for taking data. If you've been following along this read me, you should be able to skim through and understand this script.
