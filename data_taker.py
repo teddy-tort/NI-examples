@@ -60,6 +60,8 @@ class DataFile:
         with open(self.name, 'a') as f:
             f.write(f'# {str(comment)}\n')
 
+for ii in zip(10):
+    print(ii)
 
 if __name__ == "__main__":
     data = DataFile(path=os.path.join('data', '2022'), filename=f'file-{time.time()}', header='example data')
