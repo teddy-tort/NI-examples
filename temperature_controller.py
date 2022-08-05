@@ -2,7 +2,7 @@
 Example code created for the Quantum Forge course
 This code allows you to establish connection with a Lakeshore temperature controller over GPIB
 
-This example shows importing a "master" class (in this case the Device class built in gpib.py) and inheriting all of
+This example shows importing a "parent" class (in this case the Device class built in gpib.py) and inheriting all of
 its features while adding specific features for a specific Lakeshore temperature controller.
 
 @author: Teddy Tortorici
@@ -13,7 +13,7 @@ import gpib
 
 
 class LakeShore(gpib.Device):
-    def __init__(self, addr : int, inst_num: int = 331, gpib_num: int = 0):
+    def __init__(self, addr: int, inst_num: int = 331, gpib_num: int = 0):
         super(self.__class__, self).__init__(addr, gpib_num)
         self.inst_num = inst_num
 
@@ -40,10 +40,8 @@ class LakeShore(gpib.Device):
         if loop != 1 and loop != 2:
             raise IOError(f"invalid loop: {loop}")
         msg_back = self.query(f"PID? {int(loop)}")
-        p = float(msg_back[0])
-        i = float(msg_back[1])
-        d = float(msg_back[2])
-        return (p, i, d)
+        pid = [float(element) for element in msg_back.split(',')]
+        return tuple(pid)
 
     def read_ramp_speed(self, loop: int = 1) -> float:
         """Kelvin per minute"""

@@ -17,7 +17,7 @@ class Device:
                    multiple GPIB interfaces are connected"""
         self.addr = addr
         self.rm = pyvisa.ResourceManager()
-        self.dev = self.rm.open_resource(f"GPIB{gpib_num}")
+        self.dev = self.rm.open_resource(f"GPIB{gpib_num}::{addr}::INSTR")
 
     def query(self, msg):
         """Send message to instrument and return result"""
@@ -39,6 +39,14 @@ class Device:
         """Read from the instrument"""
         try:
             return self.dev.read()
+        except pyvisa.errors.VisaIOError:
+            return "timed out"
+
+    def write(self, msg):
+        """write to the instrument"""
+        try:
+            self.dev.write(msg)
+            return ""
         except pyvisa.errors.VisaIOError:
             return "timed out"
 
