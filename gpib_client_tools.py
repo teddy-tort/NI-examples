@@ -9,37 +9,34 @@ import numpy as np
 import socket
 
 
-def send(msg, host="localhost", port=62535):
+def send(msg, host="localhost", port=62538):
     """Sends message to server
     The server will lock the thread until it's done, so you can send more messages and they wait in line"""
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-
-    # send message to server
-    s.send(msg.encode('ascii'))
-
-    # message returned from the server
-    msg_out = s.recv(1024)
-
-    s.close()
-    return msg_out.decode('ascii')
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        # send message to server
+        s.send(msg.encode())
+        # message returned from the server
+        msg_out = s.recv(1024)
+    return msg_out.decode()
 
 
 class Device:
     """This class is meant to be inherited by classes dedicated to specific devices"""
-    def __init__(self, abbreviation, port=62535):
-        self.abbr = abbreviation
+    def __init__(self, dev_id, host='localhost', port=62538):
+        self.dev_id = dev_id
+        self.host = host
         self.port = port
 
     def query(self, msg):
-        return send(f"{self.abbr}::Q::{msg}")
+        return self.send(f"{self.dev_id}::Q::{msg}")
 
     def write(self, msg):
-        send(f"{self.abbr}::W::{msg}")
+        self.send(f"{self.dev_id}::W::{msg}")
         return "empty"
 
     def read(self):
-        return send(f"{self.abbr}::R::X")
+        return self.send(f"{self.dev_id}::R")
 
     def read_id(self):
         return self.query('*IDN?')
@@ -47,10 +44,13 @@ class Device:
     def reset(self):
         self.write('*RST')
 
+    def send(self, msg):
+        return send(msg, self.host, self.port)
+
 
 class LakeShore(Device):
-    def __init__(self, model_num=331, port=62535):
-        super(self.__class__, self).__init__(abbreviation="LS", port=port)      # initiate the class inherited from
+    def __init__(self, model_num=331, host='localhost', port=62535):
+        super(self.__class__, self).__init__(dev_id="LS", host=host, port=port)      # initiate the class inherited from
 
         self.model_num = int(model_num)    # as in for LS331 or LS340
 

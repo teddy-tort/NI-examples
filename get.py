@@ -14,7 +14,7 @@ import os
 import getpass
 
 
-def googledrive():
+def google_drive() -> str:
     """Locates the google drive folder on your machine (you will likely have to put new conditions here for each
     machine (probably out of date for mac and linux versions, but example gets the idea across)"""
     user = getpass.getuser()
@@ -22,9 +22,14 @@ def googledrive():
         path = f"/Users/{user}/Google_Drive/"
     elif sys.platform == "linux":
         path = f"/home/{user}/Documents/Google_Drive"
-    else:       # if it's not linux or max it's probably windows
+    else:       # if it's not linux or mac it's probably windows
         if os.name == 'nt':     # just double checking that it's windows
             path = "G:\\My Drive"
         else:
             path = ''
     return path
+
+
+gpib_address = {"LS": 13,
+                "SCOPE": 10,
+                "VS": 4}
