@@ -1,4 +1,3 @@
-import itertools
 import csv
 import numpy as np
 import pyqtgraph as pg
@@ -10,7 +9,10 @@ import sys
 import get
 import Plotting_Scripts.DateAxisItem as DateAxisItem
 
+
 class PlotApp(qtw.QMainWindow):
+    window_colors = {'background': (255, 255, 255),         # white
+                     'foreground': (0, 0, 0)}               # black
 
     colors0 = [(255, 0, 0),         # Red
                (0, 255, 0),         # Green
@@ -28,8 +30,8 @@ class PlotApp(qtw.QMainWindow):
 
     def __init__(self):
         super(PlotApp, self).__init__()
-        pg.setConfigOption('background', 'w')
-        pg.setConfigOption('foreground', 'k')
+        for key in PlotApp.window_colors.keys():
+            pg.setConfigOption(key, PlotApp.window_colors[key])
 
         self.base_path = get.google_drive()
         self.filename = None            # will be fill later

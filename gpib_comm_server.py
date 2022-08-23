@@ -19,8 +19,8 @@ lock = threading.Lock()
 # directly and use the @classmethod
 class Interpreter:
     """place device information here and rename to suit your needs"""
-    lakeshore = gpib.Device(8)
-    device2 = gpib.Device(13)
+    # lakeshore = gpib.Device(8)
+    # device2 = gpib.Device(13)
 
     @classmethod
     def parse(cls, message_to_parse):
@@ -128,4 +128,4 @@ def server_gpib(host="localhost", port=62538):
 
 
 if __name__ == "__main__":
-    server_gpib()
+    server_echo_rev()
